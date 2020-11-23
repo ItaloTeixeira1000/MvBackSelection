@@ -29,6 +29,17 @@ public class Profissional {
 	
 	@Size(min = 1, max = 50)
 	private String funcao;
+	
+	@Size(min = 2, max = 50)
+	private String endereco;
+
+	public String getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(String endereco) {
+		this.endereco = endereco;
+	}
 
 	public Long getCodigo() {
 		return codigo;

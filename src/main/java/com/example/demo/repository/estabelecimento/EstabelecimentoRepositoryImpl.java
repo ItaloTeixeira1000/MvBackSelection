@@ -72,6 +72,10 @@ private Predicate[] criarRestricoes(EstabelecimentoFilter estabelecimentoFilter,
 			predicates.add(builder.like(builder.lower(root.get("nome")), "%" + estabelecimentoFilter.getNome().toLowerCase() + "%"));
 		}
 		
+		if(!StringUtils.isEmpty(estabelecimentoFilter.getCodigo())) {
+			predicates.add(builder.equal(root.get("codigo"), estabelecimentoFilter.getCodigo()));
+		}
+		
 		return predicates.toArray(new Predicate[predicates.size()]);
 	}
 

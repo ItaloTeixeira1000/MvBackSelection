@@ -1,4 +1,4 @@
-package com.example.demo.repository.profissional;
+package com.example.demo.repository.estabelecimento_profissional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,39 +14,36 @@ import javax.persistence.criteria.Root;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.util.StringUtils;
+import com.example.demo.model.Estabelecimento_Profissional;
+import com.example.demo.repository.filter.EstabelecimentoProfissionalFilter;
 
-import com.example.demo.model.Profissional;
-import com.example.demo.repository.filter.ProfissionalFilter;
-
-public class ProfissionalRepositoryImpl implements ProfissionalRepositoryQuery{
-	
+public class EstabelecimentoProfissionalRepositoryImpl implements EstabelecimentoProfissionalRepositoryQuery {
 	@PersistenceContext
 	private EntityManager manager;
 	
 	@Override
-	public Page<Profissional> filtrar(ProfissionalFilter profissionalFilter, Pageable pageable) {
+	public Page<Estabelecimento_Profissional> filtrar(EstabelecimentoProfissionalFilter epf, Pageable pageable) {
 		CriteriaBuilder builder = manager.getCriteriaBuilder();
-		CriteriaQuery<Profissional> criteria = builder.createQuery(Profissional.class);
-		Root<Profissional> root = criteria.from(Profissional.class);
+		CriteriaQuery<Estabelecimento_Profissional> criteria = builder.createQuery(Estabelecimento_Profissional.class);
+		Root<Estabelecimento_Profissional> root = criteria.from(Estabelecimento_Profissional.class);
 		
-		Predicate[] predicates = criarRestricoes(profissionalFilter, builder, root);
+		Predicate[] predicates = criarRestricoes(epf, builder, root);
 		
 		criteria.where(predicates);
 		
-		TypedQuery<Profissional> query = manager.createQuery(criteria);
+		TypedQuery<Estabelecimento_Profissional> query = manager.createQuery(criteria);
 		
 		adicionarRestricoesDePaginacao(query, pageable);
 		
-		return new PageImpl<>(query.getResultList(), pageable, total(profissionalFilter));
+		return new PageImpl<>(query.getResultList(), pageable, total(epf));
 	}
 	
-	private Long total(ProfissionalFilter profissionalFilter) {
+	private Long total(EstabelecimentoProfissionalFilter estabelecimentoFilter) {
 		CriteriaBuilder builder = manager.getCriteriaBuilder();
 		CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
-		Root<Profissional> root = criteria.from(Profissional.class);
+		Root<Estabelecimento_Profissional> root = criteria.from(Estabelecimento_Profissional.class);
 		
-		Predicate[] predicates = criarRestricoes(profissionalFilter, builder, root);
+		Predicate[] predicates = criarRestricoes(estabelecimentoFilter, builder, root);
 		criteria.where(predicates);
 		
 		criteria.select(builder.count(root));
@@ -63,21 +60,11 @@ public class ProfissionalRepositoryImpl implements ProfissionalRepositoryQuery{
 		
 	}
 	
-private Predicate[] criarRestricoes(ProfissionalFilter profissionalFilter, CriteriaBuilder builder, Root<Profissional> root) {
+private Predicate[] criarRestricoes(EstabelecimentoProfissionalFilter estabelecimentoFilter, CriteriaBuilder builder, Root<Estabelecimento_Profissional> root) {
 		
 		List<Predicate> predicates = new ArrayList<>();
 		
-		if(!StringUtils.isEmpty(profissionalFilter.getNome())) {
-			
-			predicates.add(builder.like(builder.lower(root.get("nome")), "%" + profissionalFilter.getNome().toLowerCase() + "%"));
-		}
-		
-		if(!StringUtils.isEmpty(profissionalFilter.getCodigo())) {
-			predicates.add(builder.equal(root.get("codigo"), profissionalFilter.getCodigo()));
-		}
-		
 		return predicates.toArray(new Predicate[predicates.size()]);
 	}
-
 
 }
